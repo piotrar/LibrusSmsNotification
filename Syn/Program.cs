@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
+using Twilio;
 
 namespace Syn
 {
@@ -23,10 +24,12 @@ namespace Syn
                 using (var client = new HttpClient{BaseAddress = new Uri(logUri)})
                 {
                     ////////////////////////////////////
-                    const string librusLogin = "LOGIN";
-                    const string librusPassword = "PASSWORD";
-                    //string smsapilogin = "smsapilogin";
-                    //string smsapihaslo = "smsapilogin";
+                    const string librusLogin = "";
+                    const string librusPassword = "";
+                    const string accountSid = "";
+                    const string authToken = "";
+                    const string fromNumber = "+";
+                    const string toNumber = "+";
                     ////////////////////////////////////
 
                     var values = new Dictionary<string, string>
@@ -60,6 +63,11 @@ namespace Syn
                             //File.WriteAllText(@"C:\Users\Public\WriteText.html", messageToSend);
                             //for debug
                             //Process.Start(@"C:\Users\Public\WriteText.html");
+
+                            var twilio = new TwilioRestClient(accountSid, authToken);
+
+                            var message = twilio.SendMessage(fromNumber, toNumber, messageToSend);
+                            Console.WriteLine(message.Sid);
                         }
 
                         Thread.Sleep(TimeSpan.FromSeconds(10));
