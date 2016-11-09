@@ -5,17 +5,31 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using Twilio;
 
 namespace Syn
 {
+    class PrefixedWriter : TextWriter
+    {
+        private TextWriter originalOut;
+        public PrefixedWriter()
+        {
+            originalOut = Console.Out;
+        }
+        public override Encoding Encoding => new System.Text.ASCIIEncoding();
+        public override void WriteLine(string message) => originalOut.WriteLine($"[{DateTime.Now}] {message}");
+        public override void Write(string message) => originalOut.Write($"[{DateTime.Now}] {message}");
+    }
+
     class Program
     {
         static void Main()
         {
             try
             {
+                Console.SetOut(new PrefixedWriter());
                 ////////////////////////////////////
                 const string baseUri = @"https://m.synergia.librus.pl/";
                 const string logUri = baseUri + "module/Common/action/Login";
@@ -60,9 +74,6 @@ namespace Syn
                         {
                             var messageToSend = FormMessage(news);
                             Console.WriteLine(messageToSend);
-                            //File.WriteAllText(@"C:\Users\Public\WriteText.html", messageToSend);
-                            //for debug
-                            //Process.Start(@"C:\Users\Public\WriteText.html");
 
                             var twilio = new TwilioRestClient(accountSid, authToken);
 
